@@ -9,13 +9,13 @@ public class CardScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
 
 
     }
     private void OnMouseDown()
     {
-        Debug.Log("Click");
+        Debug.Log("Click"+gameObject.name);
     }
 
     // Update is called once per frame
