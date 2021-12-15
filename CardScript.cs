@@ -8,6 +8,13 @@ public class CardScript : MonoBehaviour
     bool volteado = false;
     SpriteRenderer render;
     // Start is called before the first frame update
+    private void Awake()
+    {
+        for (int i=0; i<=5; i++)
+        {
+            
+        }
+    }
     void Start()
     {
 
