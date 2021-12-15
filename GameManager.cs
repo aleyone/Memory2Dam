@@ -14,32 +14,39 @@ public class GameManager : MonoBehaviour
     private int posicionY = -3;
     public List<Sprite> cartasIniciales; // llena desde unity
     public List<Sprite> cartasAleatorias; // vacía
+    public List<string> tipoPersonajeInicial = new List<string> {"reina", "guardia", "asesino","obispo","alguacil","bufon","contable","adulador","baronesa","cardenal" };
+    public List<string> tipoPersonajeAleatorio;
     
     // Start is called before the first frame update
     void Start()
     {
         repeticiones = x * y;
-        Debug.Log("total repeticiones: " + repeticiones);
+       // Debug.Log("total repeticiones: " + repeticiones);
         totalCartaPorRepeticion = repeticiones / x;
-        Debug.Log("Total cartas x repeticion:" + totalCartaPorRepeticion);
+        // Debug.Log("Total cartas x repeticion:" + totalCartaPorRepeticion);
 
         for (int j = 0; j < 5; j++)
         {
             int frontAleat = Random.Range(0, cartasIniciales.Count);
-            Debug.Log(frontAleat);
             cartasAleatorias.Add(cartasIniciales[frontAleat]);
             cartasAleatorias.Add(cartasIniciales[frontAleat]);
+            tipoPersonajeAleatorio.Add(tipoPersonajeInicial[frontAleat]);
+            tipoPersonajeAleatorio.Add(tipoPersonajeInicial[frontAleat]);
             cartasIniciales.RemoveAt(frontAleat);
+            tipoPersonajeInicial.RemoveAt(frontAleat);
 
         }
 
         for (int i=1; i <= repeticiones; i++)
         {
             GameObject miCarta = Instantiate(cartaPrefab, new Vector3(posicionX, posicionY, 0), Quaternion.identity);
-            miCarta.name = ("Carta" + contador);
+            
             int random2 = Random.Range(0, cartasAleatorias.Count);
+            miCarta.name = tipoPersonajeAleatorio[random2];
             miCarta.GetComponent<CardScript>().front = cartasAleatorias[random2];
+            miCarta.GetComponent<CardScript>().nombre = tipoPersonajeAleatorio[random2];
             cartasAleatorias.RemoveAt(random2);
+            tipoPersonajeAleatorio.RemoveAt(random2);
             contador++;
             listaCartas.Add(miCarta);
 
@@ -51,6 +58,11 @@ public class GameManager : MonoBehaviour
                 totalCartaPorRepeticion += repeticiones / x;
             }
         }
+    }
+
+    public void ClickonCard(string nombre)
+    {
+        Debug.Log("Hola, soy " + nombre);
     }
 
     // Update is called once per frame

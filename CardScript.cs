@@ -7,6 +7,8 @@ public class CardScript : MonoBehaviour
     public Sprite front, back;
     bool volteado = false;
     SpriteRenderer render;
+    GameObject myGame;
+    public string nombre;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -17,12 +19,14 @@ public class CardScript : MonoBehaviour
     }
     void Start()
     {
-
         render = GetComponent<SpriteRenderer>();
+        myGame = GameObject.FindGameObjectWithTag("GameController");
 
     }
     private void OnMouseDown()
     {
+        myGame.GetComponent<GameManager>().ClickonCard(nombre);
+
         if (volteado==false) 
         {
             render.sprite = front;
