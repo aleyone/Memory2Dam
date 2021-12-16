@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     public int cartaIndice;
     GameObject miCarta;
     public GameObject texto;
+    public int puntos = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -64,8 +66,7 @@ public class GameManager : MonoBehaviour
                 totalCartaPorRepeticion += repeticiones / x;
             }
         }
-
-       
+        texto.GetComponent<Text>().text="Parejas: " + puntos;
     }
 
     public void ClickonCard(string nombre, int indice)
@@ -93,6 +94,8 @@ public class GameManager : MonoBehaviour
                 pareja[1] = "";
                 listaCartas[cartaIndice].SetActive(false);
                 listaCartas[indice].SetActive(false);
+                puntos++;
+                calculoPuntos();
             }
             else
             {
@@ -109,6 +112,11 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(2);
         listaCartas[cartaIndice].GetComponent<CardScript>().Toggle();
         listaCartas[indice].GetComponent<CardScript>().Toggle();
+    }
+
+    public void calculoPuntos()
+    {
+        texto.GetComponent<Text>().text ="Parejas: " + puntos;
     }
 
     // Update is called once per frame
