@@ -14,9 +14,12 @@ public class GameManager : MonoBehaviour
     private int posicionY = -3;
     public List<Sprite> cartasIniciales; // llena desde unity
     public List<Sprite> cartasAleatorias; // vacía
-    public List<string> tipoPersonajeInicial = new List<string> {"reina", "guardia", "asesino","obispo","alguacil","bufon","contable","adulador","baronesa","cardenal" };
+    public List<string> tipoPersonajeInicial = new List<string> { "reina", "guardia", "asesino", "obispo", "alguacil", "bufon", "contable", "adulador", "baronesa", "cardenal" };
     public List<string> tipoPersonajeAleatorio;
-    
+    bool hayPareja = false;
+    string[] pareja = new string[2] { "", "" };
+    GameObject miCarta;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,7 +42,7 @@ public class GameManager : MonoBehaviour
 
         for (int i=1; i <= repeticiones; i++)
         {
-            GameObject miCarta = Instantiate(cartaPrefab, new Vector3(posicionX, posicionY, 0), Quaternion.identity);
+           miCarta = Instantiate(cartaPrefab, new Vector3(posicionX, posicionY, 0), Quaternion.identity);
             
             int random2 = Random.Range(0, cartasAleatorias.Count);
             miCarta.name = tipoPersonajeAleatorio[random2];
@@ -63,6 +66,26 @@ public class GameManager : MonoBehaviour
     public void ClickonCard(string nombre)
     {
         Debug.Log("Hola, soy " + nombre);
+        if (pareja[0] == "")
+        {
+            pareja[0] = nombre;
+        }
+        else pareja[1] = nombre;
+        if (pareja[0] != "" && pareja[1] != "")
+        {
+            if (pareja[0] == pareja[1])
+            {
+                Debug.Log("Pareja");
+                pareja[0] = "";
+                pareja[1] = "";
+            }
+            else
+            {
+                Debug.Log("No pareja");
+                pareja[0] = "";
+                pareja[1] = "";
+            }
+        }
     }
 
     // Update is called once per frame
