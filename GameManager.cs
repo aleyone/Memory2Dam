@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     string[] pareja = new string[2] { "", "" };
     public int cartaIndice;
     GameObject miCarta;
+    public GameObject texto;
 
     // Start is called before the first frame update
     void Start()
@@ -63,6 +64,8 @@ public class GameManager : MonoBehaviour
                 totalCartaPorRepeticion += repeticiones / x;
             }
         }
+
+       
     }
 
     public void ClickonCard(string nombre, int indice)
@@ -96,18 +99,16 @@ public class GameManager : MonoBehaviour
                 Debug.Log("No pareja");
                 pareja[0] = "";
                 pareja[1] = "";
-                StartCoroutine(WaitAndPrint());                
-                listaCartas[cartaIndice].GetComponent<CardScript>().Toggle();
-                listaCartas[indice].GetComponent<CardScript>().Toggle();
-
-
+                StartCoroutine(WaitAndPrint(indice));    
             }
         }
     }
 
-    IEnumerator WaitAndPrint()
+    IEnumerator WaitAndPrint(int indice)
     {       
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(2);
+        listaCartas[cartaIndice].GetComponent<CardScript>().Toggle();
+        listaCartas[indice].GetComponent<CardScript>().Toggle();
     }
 
     // Update is called once per frame
