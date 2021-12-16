@@ -9,6 +9,7 @@ public class CardScript : MonoBehaviour
     SpriteRenderer render;
     GameObject myGame;
     public string nombre;
+    public int indice;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -25,17 +26,23 @@ public class CardScript : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        myGame.GetComponent<GameManager>().ClickonCard(nombre);
+        myGame.GetComponent<GameManager>().ClickonCard(nombre, indice);
+        Toggle();
+        
+    }
 
-        if (volteado==false) 
+    public void Toggle()
+    {
+        if (volteado == false)
         {
             render.sprite = front;
             volteado = true;
 
-        } else
+        }
+        else
         {
             render.sprite = back;
-            volteado=false;
+            volteado = false;
         }
     }
 
