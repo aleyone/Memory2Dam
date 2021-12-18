@@ -5,7 +5,7 @@ using UnityEngine;
 public class CardScript : MonoBehaviour
 {
     public Sprite front, back;
-    bool volteado = false;
+    public bool volteado = false;
     SpriteRenderer render;
     GameObject myGame;
     public string nombre;

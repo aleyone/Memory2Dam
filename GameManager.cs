@@ -5,38 +5,47 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Cartas")]
     public GameObject cartaPrefab;
     float contador = 1;
     public List<GameObject> listaCartas;
     public int x, y;
-    private int repeticiones;
-    private int totalCartaPorRepeticion;
-    private int posicionX = -8;
-    private int posicionY = -3;
+    private int repeticiones, totalCartaPorRepeticion, posicionX, posicionY;
     public List<Sprite> cartasIniciales; // llena desde unity
+    [SerializeField] private List<Sprite> baseCartas;
     public List<Sprite> cartasAleatorias; // vacía
     public List<string> tipoPersonajeInicial = new List<string> { "reina", "guardia", "asesino", "obispo", "alguacil", "bufon", "contable", "adulador", "baronesa", "cardenal" };
     public List<string> tipoPersonajeAleatorio;
-    bool hayPareja = false;
+    bool collidersActivos;
     string[] pareja = new string[2] { "", "" };
     public int cartaIndice;
     GameObject miCarta;
     public GameObject texto;
+    public Button button;
     public int puntos = 0;
 
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
+        button.onClick.AddListener(reiniciarPartida);
         repeticiones = x * y;
-       // Debug.Log("total repeticiones: " + repeticiones);
         totalCartaPorRepeticion = repeticiones / x;
-        // Debug.Log("Total cartas x repeticion:" + totalCartaPorRepeticion);
+    }
 
+    void Start()
+    {        
+        repartoCartas();
+    }
+    public void repartoCartas() {
+        posicionX = -8;
+        posicionY = -3;
+        repeticiones = x * y;
+        totalCartaPorRepeticion = repeticiones / x;
         for (int j = 0; j < 5; j++)
         {
             int frontAleat = Random.Range(0, cartasIniciales.Count);
-            cartasAleatorias.Add(cartasIniciales[frontAleat]);
-            cartasAleatorias.Add(cartasIniciales[frontAleat]);
+            cartasAleatorias.Add(baseCartas[frontAleat]);
+            cartasAleatorias.Add(baseCartas[frontAleat]);
             tipoPersonajeAleatorio.Add(tipoPersonajeInicial[frontAleat]);
             tipoPersonajeAleatorio.Add(tipoPersonajeInicial[frontAleat]);
             cartasIniciales.RemoveAt(frontAleat);
@@ -44,15 +53,14 @@ public class GameManager : MonoBehaviour
 
         }
 
-        for (int i=1; i <=repeticiones; i++)
+        for (int i = 1; i <= repeticiones; i++)
         {
-           miCarta = Instantiate(cartaPrefab, new Vector3(posicionX, posicionY, 0), Quaternion.identity);
-            
+            miCarta = Instantiate(cartaPrefab, new Vector3(posicionX, posicionY, 0), Quaternion.identity);
             int random2 = Random.Range(0, cartasAleatorias.Count);
             miCarta.name = tipoPersonajeAleatorio[random2];
             miCarta.GetComponent<CardScript>().front = cartasAleatorias[random2];
             miCarta.GetComponent<CardScript>().nombre = tipoPersonajeAleatorio[random2];
-            miCarta.GetComponent<CardScript>().indice = i-1;
+            miCarta.GetComponent<CardScript>().indice = i - 1;
             cartasAleatorias.RemoveAt(random2);
             tipoPersonajeAleatorio.RemoveAt(random2);
             contador++;
@@ -66,7 +74,7 @@ public class GameManager : MonoBehaviour
                 totalCartaPorRepeticion += repeticiones / x;
             }
         }
-        texto.GetComponent<Text>().text="Parejas: " + puntos;
+        texto.GetComponent<Text>().text = "Parejas: " + puntos;
     }
 
     public void ClickonCard(string nombre, int indice)
@@ -86,7 +94,7 @@ public class GameManager : MonoBehaviour
 
         if (pareja[0] != "" && pareja[1] != "")
         {
-            
+           
             if (pareja[0] == pareja[1])
             {
                 Debug.Log("Pareja");
@@ -96,13 +104,16 @@ public class GameManager : MonoBehaviour
                 listaCartas[indice].SetActive(false);
                 puntos++;
                 calculoPuntos();
+                
             }
             else
             {
                 Debug.Log("No pareja");
                 pareja[0] = "";
                 pareja[1] = "";
-                StartCoroutine(WaitAndPrint(indice));    
+                StartCoroutine(WaitAndPrint(indice));
+                fundirmeColliders(false);
+
             }
         }
     }
@@ -112,13 +123,48 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(2);
         listaCartas[cartaIndice].GetComponent<CardScript>().Toggle();
         listaCartas[indice].GetComponent<CardScript>().Toggle();
+        fundirmeColliders(true);
     }
 
     public void calculoPuntos()
     {
         texto.GetComponent<Text>().text ="Parejas: " + puntos;
+        if (puntos == 5)
+        {
+            texto.GetComponent<Text>().text = "JUEGO FINALIZADO";
+        }
     }
 
+    public void fundirmeColliders(bool enable)
+    {
+        for (int i = 0; i < listaCartas.Count; i++)
+        {
+            listaCartas[i].GetComponent<BoxCollider2D>().enabled = enable;
+        }
+    }
+
+    public void reiniciarPartida()
+    {
+        StopAllCoroutines();
+        Debug.Log("Reiniciamos");
+        for (int i = 0; i < listaCartas.Count; i++)
+        {
+            Destroy(listaCartas[i], 0);
+            listaCartas[i].GetComponent<CardScript>().volteado = false;
+            listaCartas[i].GetComponent<SpriteRenderer>().sprite = listaCartas[i].GetComponent<CardScript>().back;           
+        }
+        cartasIniciales.Clear();
+        tipoPersonajeAleatorio.Clear();
+        cartasAleatorias.Clear();
+        listaCartas.Clear();
+        tipoPersonajeInicial.Clear();        
+        fundirmeColliders(true);
+        tipoPersonajeInicial = new List<string> { "reina", "guardia", "asesino", "obispo", "alguacil", "bufon", "contable", "adulador", "baronesa", "cardenal" };
+        cartasIniciales = baseCartas;
+        puntos = 0;
+        cartaIndice = 0;        
+        repartoCartas();
+    }
     // Update is called once per frame
     void Update()
     {
