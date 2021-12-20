@@ -160,7 +160,10 @@ public class GameManager : MonoBehaviour
         tipoPersonajeInicial.Clear();        
         fundirmeColliders(true);
         tipoPersonajeInicial = new List<string> { "reina", "guardia", "asesino", "obispo", "alguacil", "bufon", "contable", "adulador", "baronesa", "cardenal" };
-        cartasIniciales = baseCartas;
+        for (int i = 0; i < baseCartas.Count; i++)
+        {
+            cartasIniciales.Add(baseCartas[i]);
+        }
         puntos = 0;
         cartaIndice = 0;        
         repartoCartas();
